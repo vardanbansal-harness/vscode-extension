@@ -17,7 +17,7 @@
     "commands": [
       {
         "command": "hello-world.showHelloWorld",
-        "title": "Hello World (React + CRA): Show"
+        "title": "YAML Editor in VS Code"
       }
     ]
   },

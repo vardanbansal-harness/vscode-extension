@@ -9,3 +9,9 @@ main {
 main > * {
   margin: 1rem 0;
 }
+
+.editor {
+  border: 1px solid orange;
+  padding: 5px;
+  border-radius: 8px;
+}
