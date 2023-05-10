@@ -53,7 +53,7 @@ export class HelloWorldPanel {
         // Panel view type
         "showHelloWorld",
         // Panel title
-        "Hello World",
+        "YAML Editor in VS Code",
         // The editor column the panel should be displayed in
         ViewColumn.One,
         // Extra panel configurations
