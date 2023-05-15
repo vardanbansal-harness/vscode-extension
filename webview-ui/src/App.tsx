@@ -1,4 +1,3 @@
-import { vscode } from "./utilities/vscode";
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import "./App.css";
 import { useState } from "react";
@@ -10,28 +9,17 @@ import { VSCodeTextArea } from "@vscode/webview-ui-toolkit/react";
 function App() {
 
   const [shouldRenderPluginForm, setShouldRenderPluginForm] = useState<boolean>(false)
-  function interact() {
-    vscode.postMessage({
-      command: "sendMessage",
-      text: "Message sent by React App!",
-    });
-  }
 
   return (
     <main>
-      <VSCodeButton onClick={interact}>Interact with VS Code</VSCodeButton>
-      <div className="editor">
-        <div className="panel">
-          {shouldRenderPluginForm ? 
-          <>
-            <VSCodeTextArea style={{width: '100%'}}/>
-            <VSCodeButton onClick={() => {}} className="addBtn">Add</VSCodeButton>
-          </> : 
-          <div>
-            <VSCodeButton onClick={() => setShouldRenderPluginForm(true)}>Add a plugin</VSCodeButton>
-          </div>}
-        </div>
-        </div>
+      {shouldRenderPluginForm ? 
+      <>
+        <VSCodeTextArea style={{width: '100%'}}/>
+        <VSCodeButton onClick={() => {}} className="addBtn">Add</VSCodeButton>
+      </> : 
+      <div>
+        <VSCodeButton onClick={() => setShouldRenderPluginForm(true)}>Add a plugin</VSCodeButton>
+      </div>}
     </main>
   );
 }
