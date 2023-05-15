@@ -31,6 +31,7 @@ export function activate(context: ExtensionContext) {
 
 	commands.registerCommand("codelens-sample.codelensAction", (args: any) => {
 		window.showInformationMessage(`This action adds an item to "${args}"`);
+    provider.handleClick(args);
 	});
 }
 
@@ -51,6 +52,13 @@ class PipelineConfigViewProvider implements vscode.WebviewViewProvider {
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
 	) { }
+
+  public handleClick(args: any) {
+		if (this._view) {
+			this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
+			this._view.webview.postMessage({ type: 'handleAdd', data: `command from extension for ${args}` });
+		}
+	}
 
 	public resolveWebviewView(
 		webviewView: vscode.WebviewView,

@@ -25,6 +25,7 @@ function activate(context) {
     });
     vscode_1.commands.registerCommand("codelens-sample.codelensAction", (args) => {
         vscode_1.window.showInformationMessage(`This action adds an item to "${args}"`);
+        provider.handleClick(args);
     });
 }
 exports.activate = activate;
@@ -39,6 +40,13 @@ exports.deactivate = deactivate;
 class PipelineConfigViewProvider {
     constructor(_extensionUri) {
         this._extensionUri = _extensionUri;
+    }
+    handleClick(args) {
+        var _a, _b;
+        if (this._view) {
+            (_b = (_a = this._view).show) === null || _b === void 0 ? void 0 : _b.call(_a, true); // `show` is not implemented in 1.49 but is for 1.50 insiders
+            this._view.webview.postMessage({ type: 'handleAdd', data: `command from extension for ${args}` });
+        }
     }
     resolveWebviewView(webviewView, context, _token) {
         this._view = webviewView;
