@@ -11,8 +11,10 @@ let disposables = [];
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
+    /* Bootstrap Pipeline Config left side panel */
     const provider = new PipelineConfigViewProvider(context.extensionUri);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(PipelineConfigViewProvider.viewType, provider));
+    /* Bootstrap Codelens provider on main editor window */
     const codelensProvider = new CodelensProvider_1.CodelensProvider();
     vscode_1.languages.registerCodeLensProvider("*", codelensProvider);
     vscode_1.commands.registerCommand("codelens-sample.enableCodeLens", () => {
@@ -48,6 +50,7 @@ class PipelineConfigViewProvider {
             ]
         };
         webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
+        // on click handler for buttons in webview (React app)
         webviewView.webview.onDidReceiveMessage(data => {
             var _a;
             switch (data.type) {

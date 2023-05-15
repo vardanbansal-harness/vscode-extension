@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { ExtensionContext, languages, commands, Disposable, workspace, window, Uri } from 'vscode';
-import { HelloWorldPanel } from "./panels/HelloWorldPanel";
 import { CodelensProvider } from './CodelensProvider';
 import { getUri } from "./utilities/getUri";
 
@@ -11,12 +10,13 @@ let disposables: Disposable[] = [];
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext) {
-
+  /* Bootstrap Pipeline Config left side panel */
   const provider = new PipelineConfigViewProvider(context.extensionUri);
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(PipelineConfigViewProvider.viewType, provider));
 
+  /* Bootstrap Codelens provider on main editor window */
 	const codelensProvider = new CodelensProvider();
 
 	languages.registerCodeLensProvider("*", codelensProvider);
@@ -70,6 +70,7 @@ class PipelineConfigViewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
 
+    // on click handler for buttons in webview (React app)
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
 				case 'addYAML':

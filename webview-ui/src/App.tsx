@@ -15,7 +15,8 @@ function App() {
     vscodeRef.current = acquireVsCodeApi();
   }, [])
 
-  function onAddClick() {
+  function onAddClick(event: any) {
+    console.log(event)
     if(vscodeRef.current){
     vscodeRef.current.postMessage({ type: 'addYAML', value: 'text_added_from_panel\n' });
     }
@@ -25,7 +26,7 @@ function App() {
     <main>
       {shouldRenderPluginForm ? 
       <>
-        <VSCodeTextArea style={{width: '100%'}}/>
+        <VSCodeTextArea style={{width: '100%'}} onChange={onAddClick}/>
         <VSCodeButton onClick={onAddClick} className="addBtn">Add</VSCodeButton>
       </> : 
       <div>
