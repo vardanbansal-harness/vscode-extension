@@ -47,7 +47,7 @@ class HelloWorldPanel {
             // If a webview panel does not already exist create and show a new one
             const panel = vscode_1.window.createWebviewPanel(
             // Panel view type
-            "showHelloWorld", 
+            "enableCodeLens", 
             // Panel title
             "YAML Editor in VS Code", 
             // The editor column the panel should be displayed in

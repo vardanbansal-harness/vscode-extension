@@ -10,13 +10,13 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:hello-world.showHelloWorld"
+    "onCommand:codelens-sample.enableCodeLens"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "hello-world.showHelloWorld",
+        "command": "codelens-sample.enableCodeLens",
         "title": "YAML Editor in VS Code"
       }
     ]
