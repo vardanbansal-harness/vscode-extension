@@ -51,25 +51,13 @@ class PipelineConfigViewProvider {
         webviewView.webview.onDidReceiveMessage(data => {
             var _a;
             switch (data.type) {
-                case 'colorSelected':
+                case 'addYAML':
                     {
                         (_a = vscode.window.activeTextEditor) === null || _a === void 0 ? void 0 : _a.insertSnippet(new vscode.SnippetString(`#${data.value}`));
                         break;
                     }
             }
         });
-    }
-    addColor() {
-        var _a, _b;
-        if (this._view) {
-            (_b = (_a = this._view).show) === null || _b === void 0 ? void 0 : _b.call(_a, true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-            this._view.webview.postMessage({ type: 'addColor' });
-        }
-    }
-    clearColors() {
-        if (this._view) {
-            this._view.webview.postMessage({ type: 'clearColors' });
-        }
     }
     _getWebviewContent(webview, extensionUri) {
         // The CSS file from the React build output
