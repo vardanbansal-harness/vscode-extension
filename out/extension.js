@@ -56,7 +56,7 @@ class PipelineConfigViewProvider {
             switch (data.type) {
                 case 'addYAML':
                     {
-                        (_a = vscode.window.activeTextEditor) === null || _a === void 0 ? void 0 : _a.insertSnippet(new vscode.SnippetString(`#${data.value}`));
+                        (_a = vscode.window.activeTextEditor) === null || _a === void 0 ? void 0 : _a.insertSnippet(new vscode.SnippetString(`${data.value}`));
                         break;
                     }
             }

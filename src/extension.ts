@@ -75,7 +75,7 @@ class PipelineConfigViewProvider implements vscode.WebviewViewProvider {
 			switch (data.type) {
 				case 'addYAML':
 					{
-						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
+						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`${data.value}`));
 						break;
 					}
 			}
