@@ -70,7 +70,7 @@ class PipelineConfigViewProvider {
                         const editor = vscode.window.activeTextEditor;
                         const existingYAML = ((_c = (_b = (_a = vscode.window) === null || _a === void 0 ? void 0 : _a.activeTextEditor) === null || _b === void 0 ? void 0 : _b.document) === null || _c === void 0 ? void 0 : _c.getText()) || '';
                         const existingPipelineObj = (0, YAMLHelper_1.yamlParse)(existingYAML);
-                        const stepToInsert = { name: "Script", spec: { run: value }, type: "script" };
+                        const stepToInsert = { name: "Script", spec: { run: value.trim() }, type: "script" };
                         const existingSteps = (0, lodash_1.get)(existingPipelineObj, 'stages.0.spec.steps', []);
                         existingSteps.push(stepToInsert);
                         const updatedPipelineObj = (0, lodash_1.set)(existingPipelineObj, 'stages.0.spec.steps', existingSteps);

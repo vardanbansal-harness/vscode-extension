@@ -89,7 +89,7 @@ class PipelineConfigViewProvider implements vscode.WebviewViewProvider {
 					const editor = vscode.window.activeTextEditor
 					const existingYAML = vscode.window?.activeTextEditor?.document?.getText() || ''
 					const existingPipelineObj = yamlParse(existingYAML) as Record<string, any>
-					const stepToInsert = {name: "Script", spec: {run: value}, type: "script"}
+					const stepToInsert = {name: "Script", spec: {run: value.trim()}, type: "script"}
 					const existingSteps = get(existingPipelineObj, 'stages.0.spec.steps', [])
 					existingSteps.push(stepToInsert)
 					const updatedPipelineObj = set(existingPipelineObj, 'stages.0.spec.steps', existingSteps)
