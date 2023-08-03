@@ -4,46 +4,68 @@ import { WebviewApi } from "vscode-webview";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { get } from "lodash";
 import "./App.css";
+import { StepCategories, StepCategory } from "./Constants";
 
 // const value = `version: 1\noptions:\n  repository:\n    disabled: true\nstages:\n  - name: build1\n    desc: sample ci build stage\n    type: ci\n    spec:\n      steps:\n        - name: Run echo 1\n          spec:\n            run: echo \"hi from the demo\"\n          type: script\n        - name: Run echo 2\n          type: plugin\n          spec:\n            uses: docker\n            with:\n              repo: harness/hello-world\n              connector: account.dockerhub\n        - name: new_step\n          type: script\n          spec:\n            run: echo hi\n        - name: one_more_Step\n          type: action\nname: bugbash pipeline\n`
 // const updatedValue = `version: 1\noptions:\n  repository:\n    disabled: true\nstages:\n  - name: build1\n    desc: sample ci build stage\n    type: ci\n    spec:\n      steps:\n        - name: Run Step\n          spec:\n            run: echo \"added from panel\"\n          type: script\n        - name: Run echo 1\n          spec:\n            run: echo \"hi from the demo\"\n          type: script\n        - name: Run echo 2\n          type: plugin\n          spec:\n            uses: docker\n            with:\n              repo: harness/hello-world\n              connector: account.dockerhub\n        - name: new_step\n          type: script\n          spec:\n            run: echo hi\n        - name: one_more_Step\n          type: action\nname: bugbash pipeline\n`
 
+const enum PanelView{
+  Category = 'Category',
+  Configuration = 'Configuration'
+}
+
 function App() {
-  const [command, setCommand] = useState<string>('')
+  const [input, setInput] = useState<string>('')
   const vscodeRef = useRef<WebviewApi<unknown>>()
-  const [shouldRenderPluginForm, setShouldRenderPluginForm] = useState<boolean>(false)
+  const [panelView, setPanelView] = useState<PanelView>(PanelView.Category)
 
   useEffect(() => {
     vscodeRef.current = acquireVsCodeApi();
   }, [])
 
   const onAddClick = useCallback(()  => {
-    if(command && vscodeRef.current){
-      vscodeRef.current.postMessage({ type: 'addYAML', value: `${command}\n` });
+    console.log(input)
+    if(input && vscodeRef.current){
+      vscodeRef.current.postMessage({ type: 'addYAML', value: input });
     }
-  }, [command])
+  }, [input])
 
   // Handle messages sent from the extension to the webview
   window.addEventListener('message', event => {
     const message = event.data; // The json data that the extension sent
-    switch (message.type) {
+    const {type, data: stepData} = message
+    switch (type) {
       case 'handleAdd': {
-        setCommand(message.data)
+        setInput(stepData)
         break;
       }
     }
   });
 
+  const renderPluginCategory = useCallback((category: StepCategory) : JSX.Element => {
+    const {label, description, value} = category
+    return <div key={value} className="category" onClick={() => {
+      setPanelView(PanelView.Configuration)
+    }}>
+        <div className="label">{label}</div>
+        <div className="description">{description}</div>
+      </div>
+  }, [])
+
+  const renderPluginConfigurationForm = useCallback(() : JSX.Element => {
+    return <div className="configForm">
+      <VSCodeTextArea style={{width: '50%'}} onChange={(event: any) => setInput(get(event, 'target.value'))} value={input} className="textArea"/>
+      <VSCodeButton onClick={onAddClick} className="addBtn">Add</VSCodeButton>
+    </div>
+  }, [input])
+
   return (
     <main>
-      {shouldRenderPluginForm ? 
-      <>
-        <VSCodeTextArea style={{width: '100%'}} onChange={(event: any) => setCommand(get(event, 'target.value'))} value={command}/>
-        <VSCodeButton onClick={onAddClick} className="addBtn">Add</VSCodeButton>
-      </> : 
-      <div>
-        <VSCodeButton onClick={() => setShouldRenderPluginForm(true)}>Add a plugin</VSCodeButton>
-      </div>}
+        <div className="plugins">Plugins</div>
+        {panelView === PanelView.Category ? 
+        <div className="categories">
+          {StepCategories.map((category: StepCategory) => renderPluginCategory(category))}
+        </div> : renderPluginConfigurationForm()}
     </main>
   );
 }

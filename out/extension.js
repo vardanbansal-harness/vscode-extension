@@ -7,6 +7,8 @@ const vscode = require("vscode");
 const vscode_1 = require("vscode");
 const CodelensProvider_1 = require("./CodelensProvider");
 const getUri_1 = require("./utilities/getUri");
+const YAMLHelper_1 = require("./utilities/YAMLHelper");
+const lodash_1 = require("lodash");
 let disposables = [];
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -60,13 +62,25 @@ class PipelineConfigViewProvider {
         webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
         // on click handler for buttons in webview (React app)
         webviewView.webview.onDidReceiveMessage(data => {
-            var _a;
-            switch (data.type) {
-                case 'addYAML':
-                    {
-                        (_a = vscode.window.activeTextEditor) === null || _a === void 0 ? void 0 : _a.insertSnippet(new vscode.SnippetString(`${data.value}`));
+            var _a, _b, _c;
+            const { type, value } = data;
+            if (!(0, lodash_1.isEmpty)(value)) {
+                switch (type) {
+                    case 'addYAML':
+                        const editor = vscode.window.activeTextEditor;
+                        const existingYAML = ((_c = (_b = (_a = vscode.window) === null || _a === void 0 ? void 0 : _a.activeTextEditor) === null || _b === void 0 ? void 0 : _b.document) === null || _c === void 0 ? void 0 : _c.getText()) || '';
+                        const existingPipelineObj = (0, YAMLHelper_1.yamlParse)(existingYAML);
+                        const stepToInsert = { name: "Script", spec: { run: value }, type: "script" };
+                        const existingSteps = (0, lodash_1.get)(existingPipelineObj, 'stages.0.spec.steps', []);
+                        existingSteps.push(stepToInsert);
+                        const updatedPipelineObj = (0, lodash_1.set)(existingPipelineObj, 'stages.0.spec.steps', existingSteps);
+                        const updatePipelineYAML = (0, YAMLHelper_1.yamlStringify)(updatedPipelineObj);
+                        editor === null || editor === void 0 ? void 0 : editor.edit(builder => {
+                            const doc = editor === null || editor === void 0 ? void 0 : editor.document;
+                            builder.replace(new vscode.Range(doc.lineAt(0).range.start, doc.lineAt(doc.lineCount - 1).range.end), updatePipelineYAML);
+                        });
                         break;
-                    }
+                }
             }
         });
     }

@@ -1,15 +1,52 @@
 main {
-    padding: 10px;
-    height: calc(100vh - 100px);
-    width: calc(100vw - 100px);
-    border: 1px solid grey;
-    border-radius: 8px;
-    display: flex;
-    margin: 10px;
-    flex-direction: column;
-    align-items: center;
+  border: 1px solid grey;
+  border-radius: 8px;
+  display: flex;
+  margin: 20px 0;
+  flex-direction: column;
 }
 
 .addBtn{
   width: 50px;
+}
+
+.plugins{
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid grey;
+  font-size: larger;
+}
+
+.categories{
+  width: 100%;
+}
+
+.category{
+  padding: 15px;
+  border-bottom: 1px solid grey;
+}
+
+.category:last-child {
+  border-bottom: none;
+}
+
+.label{
+  font-weight: bold;
+  color: dodgerblue;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+
+.description{
+  font-size: smaller;
+}
+
+.configForm{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.textArea{
+  padding-bottom: 5px;
 }

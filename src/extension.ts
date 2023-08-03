@@ -4,6 +4,8 @@ import * as vscode from 'vscode';
 import { ExtensionContext, languages, commands, Disposable, workspace, window, Uri } from 'vscode';
 import { CodelensProvider } from './CodelensProvider';
 import { getUri } from "./utilities/getUri";
+import { yamlParse, yamlStringify } from './utilities/YAMLHelper';
+import { get, isEmpty, set } from 'lodash';
 
 let disposables: Disposable[] = [];
 
@@ -80,12 +82,24 @@ class PipelineConfigViewProvider implements vscode.WebviewViewProvider {
 
     // on click handler for buttons in webview (React app)
 		webviewView.webview.onDidReceiveMessage(data => {
-			switch (data.type) {
+			const {type, value} = data
+			if(!isEmpty(value)){
+			switch (type) {
 				case 'addYAML':
-					{
-						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`${data.value}`));
-						break;
-					}
+					const editor = vscode.window.activeTextEditor
+					const existingYAML = vscode.window?.activeTextEditor?.document?.getText() || ''
+					const existingPipelineObj = yamlParse(existingYAML) as Record<string, any>
+					const stepToInsert = {name: "Script", spec: {run: value}, type: "script"}
+					const existingSteps = get(existingPipelineObj, 'stages.0.spec.steps', [])
+					existingSteps.push(stepToInsert)
+					const updatedPipelineObj = set(existingPipelineObj, 'stages.0.spec.steps', existingSteps)
+					const updatePipelineYAML = yamlStringify(updatedPipelineObj)        
+					editor?.edit(builder => {
+						const doc = editor?.document;
+						builder.replace(new vscode.Range(doc.lineAt(0).range.start, doc.lineAt(doc.lineCount - 1).range.end), updatePipelineYAML);
+					});
+          		break;
+				}
 			}
 		});
 	}
