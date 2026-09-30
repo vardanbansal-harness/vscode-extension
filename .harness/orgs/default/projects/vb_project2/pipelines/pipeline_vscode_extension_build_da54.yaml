@@ -1,0 +1,48 @@
+pipeline:
+  id: pipeline_vscode_extension_build_da54
+  name: pipeline_vscode_extension_build_da54
+  stages:
+    - id: build_and_test
+      name: Build and Test
+      runtime: cloud
+      clone:
+        enabled: true
+      cache:
+        enabled: true
+      steps:
+        - id: install_dependencies
+          name: Install Dependencies
+          run:
+            container:
+              image: node:18
+            shell: bash
+            script: |-
+              node --version
+              npm --version
+              npm run install:all
+        - id: build
+          name: Build
+          run:
+            container:
+              image: node:18
+            shell: bash
+            script: |-
+              node --version
+              npm run compile
+        - id: test_webview
+          name: Test Webview
+          run:
+            container:
+              image: node:18
+            shell: bash
+            script: |-
+              mkdir -p .harness/reports
+              cd webview-ui
+              npm install --no-save jest-junit
+              CI=true JEST_JUNIT_OUTPUT_DIR=../.harness/reports JEST_JUNIT_OUTPUT_NAME=results.xml npx react-scripts test --watchAll=false --passWithNoTests --reporters=default --reporters=jest-junit
+            report:
+              type: junit
+              paths:
+                - .harness/reports/results.xml
+  tags:
+    onboarding: "true"
